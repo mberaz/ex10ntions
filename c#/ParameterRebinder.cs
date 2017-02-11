@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepoProj.BLL
+namespace ex10ntions
 {
     public class Trees
     {
