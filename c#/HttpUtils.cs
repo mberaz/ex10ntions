@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.API.Core
+namespace Ex10ntions
 {
     public class HttpServiceResponse<TResult>
     {
