@@ -9,7 +9,7 @@ using CDS.Model.Dto;
 using Newtonsoft.Json.Linq;
 using Task = System.Threading.Tasks.Task;
 
-namespace CDS.Fabric.Common
+namespace Ex10ntions
 {
     public static class Extensions
     {
