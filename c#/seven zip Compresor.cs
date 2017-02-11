@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MileonStickyBLL
+namespace ex10ntions
 {
     public static class Compresor
     {
