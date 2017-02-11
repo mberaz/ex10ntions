@@ -1,8 +1,7 @@
-﻿if (!Array.prototype.select)
+if (!Array.prototype.select)
 {
-
-    Array.prototype.select = function (fnPredicate, args)
-    {/// <summary>Description</summary>
+    Array.prototype.select = function (fnPredicate)
+    {/// <summary>returns a list of objects that are created in the predicate</summary>
         var len = this.length;
         if (typeof fnPredicate != "function")
             throw new TypeError();
@@ -12,7 +11,7 @@
         {
             if (i in this)
             {
-                var value = fnPredicate.call(this[i]);
+                var value = fnPredicate.call((void 0),this[i],i,this);
                 vals.push(value);
 
             }
@@ -53,9 +52,11 @@ Array.prototype.clone = function ()
 //var items = self.items().where(function() {return this.ItemID() < currentItemID;}); 
 if (!Array.prototype.where)
 {
-    Array.prototype.where = function (fnPredicate, args)
-    {/// <summary>return all element from the array that match the filter </summary>
-        /// <param name="fnPredicate" type="function">search function delegete (items = self.items().where(function() {return this.ItemID() < currentItemID;}))</param>
+    Array.prototype.where = function (fnPredicate)
+    {
+
+        /// <summary>return all element from the array that match the filter</summary>S       
+        /// <param name="fnPredicate" type="function">search function delegete </param>
         var len = this.length;
         if (typeof fnPredicate != "function")
         {
@@ -66,7 +67,7 @@ if (!Array.prototype.where)
         {
             if (i in this)
             {
-                var match = fnPredicate.call(this[i]);
+                var match = fnPredicate.call((void 0),this[i],i,this);
                 if (match)
                     matches.push(this[i]);
             }
@@ -76,10 +77,31 @@ if (!Array.prototype.where)
     };
 }
 
+const flatten = arr => arr.reduce((a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []);
+
+if (!Array.prototype.selectMany) {
+    Array.prototype.selectMany = function (fnPredicate) {/// <summary>returns a list of objects that are created in the predicate</summary>
+        var len = this.length;
+        if (typeof fnPredicate != "function")
+            throw new TypeError();
+
+        var vals = [];
+        for (var i = 0; i < len; i++) {
+            if (i in this) {
+                var value = fnPredicate.call((void 0), this[i], i, this);
+                vals.push(value);
+
+            }
+        }
+
+        return flatten(vals);
+    };
+}
+
 //roles.singleOrDefault(function () {return this.RoleId == item.RoleId; }); 
 if (!Array.prototype.singleOrDefault)
 {
-    Array.prototype.singleOrDefault = function (fnPredicate, args)
+    Array.prototype.singleOrDefault = function (fnPredicate)
     {/// <summary>return an obeject from the array that matches the serach, if no object is found null is returned, if more then 1 element is found exception in thrown </summary>
         /// <param name="fnPredicate" type="function">search function delegete (roles.singleOrDefault(function () {return this.RoleId == item.RoleId; }))</param>
         var len = this.length;
@@ -91,7 +113,7 @@ if (!Array.prototype.singleOrDefault)
         {
             if (i in this)
             {
-                var match = fnPredicate.call(this[i]);
+                var match = fnPredicate.call((void 0),this[i],i,this);
                 if (match)
                     matches.push(this[i]);
             }
@@ -108,7 +130,7 @@ if (!Array.prototype.singleOrDefault)
 //roles.firstOrDefault(function () {return this.RoleId == item.RoleId; }); 
 if (!Array.prototype.firstOrDefault)
 {
-    Array.prototype.firstOrDefault = function (fnPredicate, args)
+    Array.prototype.firstOrDefault = function (fnPredicate)
     {/// <summary>return an obeject from the array that matches the serach, if no object is found null is returned, if more then 1 element is found the first is returned </summary>
         /// <param name="fnPredicate" type="function">search function delegete (roles.firstOrDefault(function () {return this.RoleId == item.RoleId; }))</param>
         var len = this.length;
@@ -119,7 +141,7 @@ if (!Array.prototype.firstOrDefault)
         {
             if (i in this)
             {
-                var match = fnPredicate.call(this[i]);
+                var match = fnPredicate.call((void 0),this[i],i,this);
                 if (match)
                     return this[i];
             }
@@ -142,7 +164,7 @@ if (!Array.prototype.lastOrDefault)
         {
             if (i in this)
             {
-                var match = fnPredicate.call(this[i]);
+                var match = fnPredicate.call((void 0),this[i],i,this);
                 if (match)
                     return this[i];
             }
@@ -155,7 +177,7 @@ if (!Array.prototype.lastOrDefault)
 //items().max(function() { return  this.ItemID(); }) 
 if (!Array.prototype.max)
 {
-    Array.prototype.max = function (fnValueProvider, args)
+    Array.prototype.max = function (fnValueProvider)
     {/// <summary>find the max value for a param in all the array  </summary>
         /// <param name="fnPredicate" type="function">search function delegete ( items().max(function() { return  this.ItemID(); }) )</param>
         var len = this.length;
@@ -166,12 +188,12 @@ if (!Array.prototype.max)
             return null;
 
         var maxItem = this[0];
-        var maxValue = fnValueProvider.call(maxItem);
+        var maxValue = fnValueProvider.call((void 0),maxItem);
         for (var i = 0; i < len; i++)
         {
             if (i in this)
             {
-                var val = fnValueProvider.call(this[i]);
+                var val = fnValueProvider.call((void 0),this[i],i,this);
                 if (maxItem == null || val > maxValue)
                 {
                     maxItem = this[i];
@@ -186,7 +208,7 @@ if (!Array.prototype.max)
 //items().min(function() { return  this.ItemID(); }) 
 if (!Array.prototype.min)
 {
-    Array.prototype.min = function (fnValueProvider, args)
+    Array.prototype.min = function (fnValueProvider)
     {/// <summary>find the min value for a param in all the array  </summary>
         /// <param name="fnPredicate" type="function">search function delegete ( items().min(function() { return  this.ItemID(); }) )</param>
         var len = this.length;
@@ -197,12 +219,12 @@ if (!Array.prototype.min)
             return null;
 
         var minItem = this[0];
-        var minValue = fnValueProvider.call(minItem);
+        var minValue = fnValueProvider.call((void 0),minItem);
         for (var i = 0; i < len; i++)
         {
             if (i in this)
             {
-                var val = fnValueProvider.call(this[i]);
+                var val = fnValueProvider.call((void 0),this[i],i,this);
                 if (minItem == null || val < minValue)
                 {
                     minItem = this[i];
@@ -217,7 +239,7 @@ if (!Array.prototype.min)
 //items().sum(function() { return  this.Price(); }) 
 if (!Array.prototype.sum)
 {
-    Array.prototype.sum = function (fnValueProvider, args)
+    Array.prototype.sum = function (fnValueProvider)
     {/// <summary>adds all the values of a param in all the array </summary>
         /// <param name="fnPredicate" type="function">search function delegete  ( items().sum(function() { return  this.Price(); }) )</param>
         var len = this.length;
@@ -232,7 +254,7 @@ if (!Array.prototype.sum)
         {
             if (i in this)
             {
-                sum += fnValueProvider.call(this[i]);
+                sum += fnValueProvider.call((void 0),this[i],i,this);
             }
         }
 
@@ -257,7 +279,7 @@ if (!Array.prototype.average)
         {
             if (i in this)
             {
-                sum += fnValueProvider.call(this[i]);
+                sum += fnValueProvider.call((void 0),this[i],i,this);
             }
         }
 
@@ -267,9 +289,9 @@ if (!Array.prototype.average)
 
 if (!Array.prototype.groupBy)
 {
-    Array.prototype.groupBy = function (fnValueProvider, args)
+    Array.prototype.groupBy = function (fnValueProvider)
     {/// <summary>groups element in the array based on a param </summary>
-        /// <param name="fnPredicate" type="function">search function delegete ( roles.groupBy(function() { return  this.RoleID(); })))</param>
+        /// <param name="fnPredicate" type="function">search function delegete ( roles.groupBy(function() { return  this.RoleID; })))</param>
         var len = this.length;
         if (typeof fnValueProvider != "function")
             throw new TypeError();
@@ -286,7 +308,7 @@ if (!Array.prototype.groupBy)
                 var addNewGroup = true;
                 var groupLen = groupedList.length;
 
-                var key = fnValueProvider.call(this[i]);
+                var key = fnValueProvider.call((void 0),this[i],i,this);
 
                 for (var j = 0; j < groupLen; j++)
                 {
@@ -315,7 +337,7 @@ if (!Array.prototype.groupBy)
 //items().count(function () {return this.Price == price; }); 
 if (!Array.prototype.count)
 {
-    Array.prototype.count = function (fnPredicate, args)
+    Array.prototype.count = function (fnPredicate)
     {/// <summary>count the number of element that match the search  </summary>
         /// <param name="fnPredicate" type="function">search function delegete (items().count(function () {return this.Price == price; }); )</param>
         var len = this.length;
@@ -326,7 +348,7 @@ if (!Array.prototype.count)
         {
             if (i in this)
             {
-                var match = fnPredicate.call(this[i]);
+                var match = fnPredicate.call((void 0),this[i],i,this);
                 if (match)
                     count++;
             }
@@ -338,7 +360,7 @@ if (!Array.prototype.count)
 //items().any(function () {return this.Price == price; }); 
 if (!Array.prototype.any)
 {
-    Array.prototype.any = function (fnPredicate, args)
+    Array.prototype.any = function (fnPredicate)
     {/// <summary>determines if atlest one element in the array marchs the search   </summary>
         /// <param name="fnPredicate" type="function">search function delegete (items().any(function () {return this.Price == price; });)</param>
         var len = this.length;
@@ -349,7 +371,7 @@ if (!Array.prototype.any)
         {
             if (i in this)
             {
-                var match = fnPredicate.call(this[i]);
+                var match = fnPredicate.call((void 0),this[i],i,this);
                 if (match)
                     return true;
             }
@@ -361,7 +383,7 @@ if (!Array.prototype.any)
 
 if (!Array.prototype.all)
 {
-    Array.prototype.all = function (fnPredicate, args)
+    Array.prototype.all = function (fnPredicate)
     {/// <summary>determines if all element in the array marchs the search    </summary>
         /// <param name="fnPredicate" type="function">search function delegete (items().all(function () {return this.Price == price; });)</param>
         var len = this.length;
@@ -372,7 +394,7 @@ if (!Array.prototype.all)
         {
             if (i in this)
             {
-                var match = fnPredicate.call(this[i]);
+                var match = fnPredicate.call((void 0),this[i],i,this);
                 if (!match)
                     return false;
             }
@@ -384,29 +406,26 @@ if (!Array.prototype.all)
 
 if (!Array.prototype.Remove)
 {
-    Array.prototype.Remove = function (fnPredicate, args)
-    {
-        /// <summary>removes all element from the array that matchs the search</summary>
-        /// <param name="fnPredicate" type="function">search function delegete</param>
-        var len = this.length;
-        if (typeof fnPredicate != "function")
-            throw new TypeError();
-
-        var matches = [];
-        for (var i = 0; i < len; i++)
-        {
-            if (i in this)
-            {
-                var match = fnPredicate.call(this[i]);
-                if (!match)
-                {
-                    //return this[i];
-                    matches.push(this[i]);
+        Array.prototype.remove = function(valueOrPredicate) {
+            var underlyingArray = this;
+            var removedValues = [];
+            var predicate = typeof valueOrPredicate == "function"  ? valueOrPredicate : function(value) { return value === valueOrPredicate; };
+            for (var i = 0; i < underlyingArray.length; i++) {
+                var value = underlyingArray[i];
+                if (predicate(value)) {
+                    //if (removedValues.length === 0) {
+                    //    this.valueWillMutate();
+                    //}
+                    removedValues.push(value);
+                    underlyingArray.splice(i, 1);
+                    i--;
                 }
             }
-        }
-        return matches;
-    }
+            //if (removedValues.length) {
+            //    this.valueHasMutated();
+            //}
+            return removedValues;
+        };
 }
 
 if (!Array.prototype.swapItems)
@@ -448,7 +467,7 @@ if (!Array.prototype.distinct)
 
 if (!Array.prototype.distinctByKey)
 {
-    Array.prototype.distinctByKey = function (fnPredicate, args)
+    Array.prototype.distinctByKey = function (fnPredicate)
     {/// <summary>removes duplicates entitys from the array (check a specific key)    </summary>
         /// <param name="fnPredicate" type="function">search function delegete (items().distinct(function () {return this.ID });)</param>
         var len = this.length;
@@ -461,7 +480,7 @@ if (!Array.prototype.distinctByKey)
         {
             if (i in this)
             {
-                var key = fnPredicate.call(this[i]);
+                var key = fnPredicate.call((void 0),this[i],i,this);
 
                 var innerLen = keys.length;
                 var wasFound = false;
@@ -564,7 +583,7 @@ if (!Array.prototype.orderBy)
         {
             for (var j = 0; j < len - 1; j++)
             {
-                if (fnPredicate.call(this[j]) > fnPredicate.call(this[j + 1]))
+                if (fnPredicate.call((void 0),this[j]) > fnPredicate.call((void 0),this[j + 1]))
                 {
                     temp = array[j];
 
@@ -595,7 +614,7 @@ if (!Array.prototype.orderByDescending)
         {
             for (var j = 0; j < len - 1; j++)
             {
-                if (fnPredicate.call(this[j]) < fnPredicate.call(this[j + 1]))
+                if (fnPredicate.call((void 0),this[j]) < fnPredicate.call((void 0),this[j + 1]))
                 {
                     temp = array[j];
 
@@ -643,7 +662,7 @@ if (!Array.prototype.skipWhile)
 
         for (var i = 0; i < len; i++)
         {
-            var match = fnPredicate.call(this[i]);
+            var match = fnPredicate.call((void 0),this[i],i,this);
             if (!match)
             {
                 counter = i;
@@ -695,7 +714,7 @@ if (!Array.prototype.takeWhile)
 
         for (var i = 0; i < len; i++)
         {
-            var match = fnPredicate.call(this[i]);
+            var match = fnPredicate.call((void 0),this[i],i,this);
             if (!match)
             {
                 counter = i;
@@ -828,7 +847,7 @@ if (!Array.prototype.reduce)
     };
 }
 
-id(!Array.prototype.toDictionary )
+if(!Array.prototype.toDictionary )
 { 	
 	/// <summary>Creates an object from an array according to a specified key selector function </summary>
 	/// <param name="fnPredicate" type="function">search function delegete</param> (var dic = arr.toDictionary(function(t){ return "Num" + t }, function(u){ return u }); )
