@@ -275,6 +275,10 @@ namespace Ex10ntions
         /// <returns></returns>
         public static string CapitalizeFirstLetter(this string text) => text.First().ToString().ToUpper() + text.Substring(1).ToLower();
 
+    	public static string ToTitleCase(this  string str)
+	{
+		return  System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str);
+	}
         public static string SurroundWithApostrophes(this string text) => "'" + text + "'";
 
         public static bool IsEmpty(this string val) => string.IsNullOrEmpty(val);
