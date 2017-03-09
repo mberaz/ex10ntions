@@ -394,6 +394,13 @@ namespace Ex10ntions
         /// <returns></returns>
         public static List<Task> ToTaskList(params Action[] list) => new List<Task>(list.Select(Task.Run));
 
+	public static bool IsDefault<T>(this T value) where T : struct
+        {
+            bool isDefault = value.Equals(default(T));
+
+            return isDefault;
+        }
+	    
         /// <summary>
         /// waiting for a list of tasks to complete (NOT AWAITABLE!)
         /// </summary>
